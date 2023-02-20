@@ -1,5 +1,6 @@
 # GR2
 Nuget:
+/n
 -AutoMapper 12.0.1
 -Microsoft.AspNetCore.Identity.EntityFrameworkCore 7.0.3
 -Microsoft.AspNetCore.Identity.UI 7.0.3
