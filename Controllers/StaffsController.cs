@@ -10,88 +10,87 @@ using StudentManagementSys.Model;
 
 namespace StuManSys.Controllers
 {
-    public class ItemsController : Controller
+    public class StaffsController : Controller
     {
         private readonly StuManSysContext _context;
 
-        public ItemsController(StuManSysContext context)
+        public StaffsController(StuManSysContext context)
         {
             _context = context;
         }
 
-        // GET: Items
+        // GET: Staffs
         public async Task<IActionResult> Index()
         {
-              return _context.Item != null ? 
-                          View(await _context.Item.ToListAsync()) :
-                          Problem("Entity set 'StuManSysContext.Item'  is null.");
+              return _context.Staff != null ? 
+                          View(await _context.Staff.ToListAsync()) :
+                          Problem("Entity set 'StuManSysContext.Staff'  is null.");
         }
 
-        // GET: Items/Details/5
+        // GET: Staffs/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.Item == null)
+            if (id == null || _context.Staff == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item
-                .FirstOrDefaultAsync(m => m.ItemID == id);
-            if (item == null)
+            var staff = await _context.Staff
+                .FirstOrDefaultAsync(m => m.UID == id);
+            if (staff == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(staff);
         }
 
-        // GET: Items/Create
+        // GET: Staffs/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Items/Create
+        // POST: Staffs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Desc,ItemID,price")] Item item)
+        public async Task<IActionResult> Create([Bind("School,LstClassSubject,LstClassRoom,UID,Name,Status,BirtDate,Type,PhoneNumber,Email,Sex,Address,Relative,YearofStart,Religion,Authority,BCKey,StoreID")] Staff staff)
         {
-            //if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _context.Add(item);
+                _context.Add(staff);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
-            //return View(item);
+            return View(staff);
         }
 
-        // GET: Items/Edit/5
+        // GET: Staffs/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null || _context.Item == null)
+            if (id == null || _context.Staff == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item.FindAsync(id);
-            if (item == null)
+            var staff = await _context.Staff.FindAsync(id);
+            if (staff == null)
             {
                 return NotFound();
             }
-            return View(item);
+            return View(staff);
         }
 
-        // POST: Items/Edit/5
+        // POST: Staffs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,Desc,ItemID,price")] Item item)
+        public async Task<IActionResult> Edit(string id, [Bind("School,LstClassSubject,LstClassRoom,UID,Name,Status,BirtDate,Type,PhoneNumber,Email,Sex,Address,Relative,YearofStart,Religion,Authority,BCKey,StoreID")] Staff staff)
         {
-            if (id != item.ItemID)
+            if (id != staff.UID)
             {
                 return NotFound();
             }
@@ -100,12 +99,12 @@ namespace StuManSys.Controllers
             {
                 try
                 {
-                    _context.Update(item);
+                    _context.Update(staff);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ItemExists(item.ItemID))
+                    if (!StaffExists(staff.UID))
                     {
                         return NotFound();
                     }
@@ -116,49 +115,49 @@ namespace StuManSys.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            return View(staff);
         }
 
-        // GET: Items/Delete/5
+        // GET: Staffs/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null || _context.Item == null)
+            if (id == null || _context.Staff == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item
-                .FirstOrDefaultAsync(m => m.ItemID == id);
-            if (item == null)
+            var staff = await _context.Staff
+                .FirstOrDefaultAsync(m => m.UID == id);
+            if (staff == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(staff);
         }
 
-        // POST: Items/Delete/5
+        // POST: Staffs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Item == null)
+            if (_context.Staff == null)
             {
-                return Problem("Entity set 'StuManSysContext.Item'  is null.");
+                return Problem("Entity set 'StuManSysContext.Staff'  is null.");
             }
-            var item = await _context.Item.FindAsync(id);
-            if (item != null)
+            var staff = await _context.Staff.FindAsync(id);
+            if (staff != null)
             {
-                _context.Item.Remove(item);
+                _context.Staff.Remove(staff);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ItemExists(string id)
+        private bool StaffExists(string id)
         {
-          return (_context.Item?.Any(e => e.ItemID == id)).GetValueOrDefault();
+          return (_context.Staff?.Any(e => e.UID == id)).GetValueOrDefault();
         }
     }
 }

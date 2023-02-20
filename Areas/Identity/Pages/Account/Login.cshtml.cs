@@ -134,7 +134,8 @@ namespace StuManSys.Areas.Identity.Pages.Account
                     return Page();
                 }
             }
-
+            Console.WriteLine("Current username"+HttpContext.User.Identity.Name);
+            String Name = HttpContext.User.Identity.Name;
             // If we got this far, something failed, redisplay form
             return Page();
         }

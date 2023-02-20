@@ -10,88 +10,87 @@ using StudentManagementSys.Model;
 
 namespace StuManSys.Controllers
 {
-    public class ItemsController : Controller
+    public class StoresController : Controller
     {
         private readonly StuManSysContext _context;
 
-        public ItemsController(StuManSysContext context)
+        public StoresController(StuManSysContext context)
         {
             _context = context;
         }
 
-        // GET: Items
+        // GET: Stores
         public async Task<IActionResult> Index()
         {
-              return _context.Item != null ? 
-                          View(await _context.Item.ToListAsync()) :
-                          Problem("Entity set 'StuManSysContext.Item'  is null.");
+              return _context.Store != null ? 
+                          View(await _context.Store.ToListAsync()) :
+                          Problem("Entity set 'StuManSysContext.Store'  is null.");
         }
 
-        // GET: Items/Details/5
+        // GET: Stores/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.Item == null)
+            if (id == null || _context.Store == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item
-                .FirstOrDefaultAsync(m => m.ItemID == id);
-            if (item == null)
+            var store = await _context.Store
+                .FirstOrDefaultAsync(m => m.SID == id);
+            if (store == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(store);
         }
 
-        // GET: Items/Create
+        // GET: Stores/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Items/Create
+        // POST: Stores/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Desc,ItemID,price")] Item item)
+        public async Task<IActionResult> Create([Bind("SID,OwnerID,Status,description,Type")] Store store)
         {
-            //if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _context.Add(item);
+                _context.Add(store);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
-            //return View(item);
+            return View(store);
         }
 
-        // GET: Items/Edit/5
+        // GET: Stores/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null || _context.Item == null)
+            if (id == null || _context.Store == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item.FindAsync(id);
-            if (item == null)
+            var store = await _context.Store.FindAsync(id);
+            if (store == null)
             {
                 return NotFound();
             }
-            return View(item);
+            return View(store);
         }
 
-        // POST: Items/Edit/5
+        // POST: Stores/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,Desc,ItemID,price")] Item item)
+        public async Task<IActionResult> Edit(string id, [Bind("SID,OwnerID,Status,description,Type")] Store store)
         {
-            if (id != item.ItemID)
+            if (id != store.SID)
             {
                 return NotFound();
             }
@@ -100,12 +99,12 @@ namespace StuManSys.Controllers
             {
                 try
                 {
-                    _context.Update(item);
+                    _context.Update(store);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ItemExists(item.ItemID))
+                    if (!StoreExists(store.SID))
                     {
                         return NotFound();
                     }
@@ -116,49 +115,49 @@ namespace StuManSys.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            return View(store);
         }
 
-        // GET: Items/Delete/5
+        // GET: Stores/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null || _context.Item == null)
+            if (id == null || _context.Store == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item
-                .FirstOrDefaultAsync(m => m.ItemID == id);
-            if (item == null)
+            var store = await _context.Store
+                .FirstOrDefaultAsync(m => m.SID == id);
+            if (store == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(store);
         }
 
-        // POST: Items/Delete/5
+        // POST: Stores/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Item == null)
+            if (_context.Store == null)
             {
-                return Problem("Entity set 'StuManSysContext.Item'  is null.");
+                return Problem("Entity set 'StuManSysContext.Store'  is null.");
             }
-            var item = await _context.Item.FindAsync(id);
-            if (item != null)
+            var store = await _context.Store.FindAsync(id);
+            if (store != null)
             {
-                _context.Item.Remove(item);
+                _context.Store.Remove(store);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ItemExists(string id)
+        private bool StoreExists(string id)
         {
-          return (_context.Item?.Any(e => e.ItemID == id)).GetValueOrDefault();
+          return (_context.Store?.Any(e => e.SID == id)).GetValueOrDefault();
         }
     }
 }

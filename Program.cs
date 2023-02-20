@@ -6,7 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<StuManSysContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StuManSysContext") ?? throw new InvalidOperationException("Connection string 'StuManSysContext' not found.")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<StuManSysContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<StuManSysContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

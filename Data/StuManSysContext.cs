@@ -20,5 +20,7 @@ namespace StuManSys.Data
         public DbSet<StudentManagementSys.Model.Item> Item { get; set; } = default!;
 
         public DbSet<StudentManagementSys.Model.Staff> Staff { get; set; } = default!;
+
+        public DbSet<StudentManagementSys.Model.Store> Store { get; set; } = default!;
     }
 }

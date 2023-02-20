@@ -10,88 +10,88 @@ using StudentManagementSys.Model;
 
 namespace StuManSys.Controllers
 {
-    public class ItemsController : Controller
+    public class StudentsController : Controller
     {
         private readonly StuManSysContext _context;
 
-        public ItemsController(StuManSysContext context)
+        public StudentsController(StuManSysContext context)
         {
             _context = context;
         }
 
-        // GET: Items
+        // GET: Students
         public async Task<IActionResult> Index()
         {
-              return _context.Item != null ? 
-                          View(await _context.Item.ToListAsync()) :
-                          Problem("Entity set 'StuManSysContext.Item'  is null.");
+              return _context.Student != null ? 
+                          View(await _context.Student.ToListAsync()) :
+                          Problem("Entity set 'StuManSysContext.Student'  is null.");
         }
 
-        // GET: Items/Details/5
+        // GET: Students/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.Item == null)
+            String Name = HttpContext.User.Identity.Name;
+            if (id == null || _context.Student == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item
-                .FirstOrDefaultAsync(m => m.ItemID == id);
-            if (item == null)
+            var student = await _context.Student
+                .FirstOrDefaultAsync(m => m.UID == id);
+            if (student == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(student);
         }
 
-        // GET: Items/Create
+        // GET: Students/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Items/Create
+        // POST: Students/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Desc,ItemID,price")] Item item)
+        public async Task<IActionResult> Create([Bind("SchoolSession,CPA,TotalCredit,PassedCredit,ClassRoomID,Program,SubjectEnlisted,UID,Name,Status,BirtDate,Type,PhoneNumber,Email,Sex,Address,Relative,YearofStart,Religion,Authority,BCKey,StoreID")] Student student)
         {
-            //if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _context.Add(item);
+                _context.Add(student);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
-            //return View(item);
+            return View(student);
         }
 
-        // GET: Items/Edit/5
+        // GET: Students/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null || _context.Item == null)
+            if (id == null || _context.Student == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item.FindAsync(id);
-            if (item == null)
+            var student = await _context.Student.FindAsync(id);
+            if (student == null)
             {
                 return NotFound();
             }
-            return View(item);
+            return View(student);
         }
 
-        // POST: Items/Edit/5
+        // POST: Students/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,Desc,ItemID,price")] Item item)
+        public async Task<IActionResult> Edit(string id, [Bind("SchoolSession,CPA,TotalCredit,PassedCredit,ClassRoomID,Program,SubjectEnlisted,UID,Name,Status,BirtDate,Type,PhoneNumber,Email,Sex,Address,Relative,YearofStart,Religion,Authority,BCKey,StoreID")] Student student)
         {
-            if (id != item.ItemID)
+            if (id != student.UID)
             {
                 return NotFound();
             }
@@ -100,12 +100,12 @@ namespace StuManSys.Controllers
             {
                 try
                 {
-                    _context.Update(item);
+                    _context.Update(student);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ItemExists(item.ItemID))
+                    if (!StudentExists(student.UID))
                     {
                         return NotFound();
                     }
@@ -116,49 +116,49 @@ namespace StuManSys.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            return View(student);
         }
 
-        // GET: Items/Delete/5
+        // GET: Students/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null || _context.Item == null)
+            if (id == null || _context.Student == null)
             {
                 return NotFound();
             }
 
-            var item = await _context.Item
-                .FirstOrDefaultAsync(m => m.ItemID == id);
-            if (item == null)
+            var student = await _context.Student
+                .FirstOrDefaultAsync(m => m.UID == id);
+            if (student == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(student);
         }
 
-        // POST: Items/Delete/5
+        // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Item == null)
+            if (_context.Student == null)
             {
-                return Problem("Entity set 'StuManSysContext.Item'  is null.");
+                return Problem("Entity set 'StuManSysContext.Student'  is null.");
             }
-            var item = await _context.Item.FindAsync(id);
-            if (item != null)
+            var student = await _context.Student.FindAsync(id);
+            if (student != null)
             {
-                _context.Item.Remove(item);
+                _context.Student.Remove(student);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ItemExists(string id)
+        private bool StudentExists(string id)
         {
-          return (_context.Item?.Any(e => e.ItemID == id)).GetValueOrDefault();
+          return (_context.Student?.Any(e => e.UID == id)).GetValueOrDefault();
         }
     }
 }
