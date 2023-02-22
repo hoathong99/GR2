@@ -12,6 +12,10 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Enable calling controller as services
+builder.Services.AddMvcCore().AddControllersAsServices();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings.

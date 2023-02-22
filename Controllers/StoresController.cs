@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StuManSys.Data;
 using StudentManagementSys.Model;
+using AutoMapper;
+using StudentManagementSys.Controllers.Dto;
 
 namespace StuManSys.Controllers
 {
@@ -18,13 +20,57 @@ namespace StuManSys.Controllers
         {
             _context = context;
         }
+        private async Task<ActionResult<List<ItemDto>>> mapStringToList(String? a)
+        {
+            var mapper = new Mapper(itemMapConfig);
+
+            List<String> itemsId = String.IsNullOrEmpty(a) ? new List<String>() : a.Split(",").ToList();
+            List<ItemDto> items = new List<ItemDto>();
+            foreach (String s in itemsId)
+            {
+                var item = await _context.Item.FindAsync(s);
+                if (item != null)
+                {
+                    items.Add(mapper.Map<ItemDto>(item));
+                }
+            }
+            return items;
+        }
+
+        private MapperConfiguration config = new MapperConfiguration(cfg =>
+             cfg.CreateMap<Store, StoreDto>()
+        );
+
+        private MapperConfiguration configReversed = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<StoreDto, Store>()
+        );
+
+        private MapperConfiguration itemMapConfig = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<Item, ItemDto>()
+        );
 
         // GET: Stores
         public async Task<IActionResult> Index()
         {
-              return _context.Store != null ? 
-                          View(await _context.Store.ToListAsync()) :
-                          Problem("Entity set 'StuManSysContext.Store'  is null.");
+            if(_context.Store != null)
+            {
+                var mapper = new Mapper(config);
+                List<StoreDto> rs = new List<StoreDto>();
+                List<Store> lsStore = await _context.Store.ToListAsync();
+                foreach(Store s in lsStore)
+                {
+                    rs.Add(mapper.Map<StoreDto>(s));
+                }
+                return View(rs);
+            }
+            else
+            {
+                return Problem("Entity set 'StuManSysContext.Store'  is null.");
+            }
+              //return _context.Store != null ? 
+              //            View(await _context.Store.ToListAsync()) :
+              //            Problem("Entity set 'StuManSysContext.Store'  is null.");
+
         }
 
         // GET: Stores/Details/5
@@ -42,7 +88,10 @@ namespace StuManSys.Controllers
                 return NotFound();
             }
 
-            return View(store);
+            var mapper = new Mapper(config);
+            StoreDto rs = mapper.Map<StoreDto>(store);
+            rs.Items = mapStringToList(store.Items).Result.Value;
+            return View(rs);
         }
 
         // GET: Stores/Create
@@ -56,15 +105,17 @@ namespace StuManSys.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SID,OwnerID,Status,description,Type")] Store store)
+        public async Task<IActionResult> Create([Bind("SID,OwnerID,Status,description,Type")] StoreDto storeDto)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(store);
+            //if (ModelState.IsValid)
+            //{
+            var mapper = new Mapper(configReversed);
+
+            _context.Add(mapper.Map<Store>(storeDto));
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(store);
+            //}
+            //return View(store);
         }
 
         // GET: Stores/Edit/5
@@ -95,8 +146,8 @@ namespace StuManSys.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 try
                 {
                     _context.Update(store);
@@ -114,8 +165,8 @@ namespace StuManSys.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            return View(store);
+            //}
+            //return View(store);
         }
 
         // GET: Stores/Delete/5
