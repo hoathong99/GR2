@@ -150,9 +150,17 @@ namespace StuManSys.Controllers
             //{
             var obj = mapper.Map<Store>(storeDto);
             obj.Items = _context.Store.FindAsync(storeDto.SID).Result == null ? "" : _context.Store.FindAsync(storeDto.SID).Result.Items;
+            _context.ChangeTracker.Clear();
+
+            //var model = _context.Entry(obj);
+            //// state is now Modified. This supercedes the AsNoTracking()
+
+            //model.State = EntityState.Modified;
+
+            _context.Entry(obj).State = EntityState.Modified;
             try
                 {
-                    _context.Update(obj);
+                    //_context.Update(obj);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
