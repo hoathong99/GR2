@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StudentManagementSys.Model
+namespace StudentManagementSys.Controllers.Dto
 {
-    public class Store
+    public class StoreDto
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public String SID { get; set; }
@@ -13,7 +13,7 @@ namespace StudentManagementSys.Model
         public Boolean Status { get; set; }
         public String description { get; set; }
         public String Type { get; set; }
-        public String? Items { get; set; }
+        public List<ItemDto> Items { get; set; }
     }
 }
 
