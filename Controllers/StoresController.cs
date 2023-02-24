@@ -20,6 +20,18 @@ namespace StuManSys.Controllers
         {
             _context = context;
         }
+
+        private MapperConfiguration config = new MapperConfiguration(cfg =>
+             cfg.CreateMap<Store, StoreDto>()
+        );
+
+        private MapperConfiguration configReversed = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<StoreDto, Store>()
+        );
+
+        private MapperConfiguration itemMapConfig = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<Item, ItemDto>()
+        );
         private async Task<ActionResult<List<ItemDto>>> mapStringToList(String? a)
         {
             var mapper = new Mapper(itemMapConfig);
@@ -36,18 +48,6 @@ namespace StuManSys.Controllers
             }
             return items;
         }
-
-        private MapperConfiguration config = new MapperConfiguration(cfg =>
-             cfg.CreateMap<Store, StoreDto>()
-        );
-
-        private MapperConfiguration configReversed = new MapperConfiguration(cfg =>
-                    cfg.CreateMap<StoreDto, Store>()
-        );
-
-        private MapperConfiguration itemMapConfig = new MapperConfiguration(cfg =>
-                    cfg.CreateMap<Item, ItemDto>()
-        );
 
         // GET: Stores
         public async Task<IActionResult> Index()
@@ -125,8 +125,8 @@ namespace StuManSys.Controllers
             {
                 return NotFound();
             }
-
-            var store = await _context.Store.FindAsync(id);
+            var mapper = new Mapper(config);
+            var store = mapper.Map<StoreDto>(await _context.Store.FindAsync(id));
             if (store == null)
             {
                 return NotFound();
@@ -139,23 +139,33 @@ namespace StuManSys.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("SID,OwnerID,Status,description,Type")] Store store)
+        public async Task<IActionResult> Edit(string id, [Bind("SID,OwnerID,Status,description,Type")] StoreDto storeDto)
         {
-            if (id != store.SID)
+            if (id != storeDto.SID)
             {
                 return NotFound();
             }
-
+            var mapper = new Mapper(configReversed);
             //if (ModelState.IsValid)
             //{
-                try
+            var obj = mapper.Map<Store>(storeDto);
+            obj.Items = _context.Store.FindAsync(storeDto.SID).Result == null ? "" : _context.Store.FindAsync(storeDto.SID).Result.Items;
+            _context.ChangeTracker.Clear();
+
+            //var model = _context.Entry(obj);
+            //// state is now Modified. This supercedes the AsNoTracking()
+
+            //model.State = EntityState.Modified;
+
+            _context.Entry(obj).State = EntityState.Modified;
+            try
                 {
-                    _context.Update(store);
+                    //_context.Update(obj);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StoreExists(store.SID))
+                    if (!StoreExists(storeDto.SID))
                     {
                         return NotFound();
                     }
