@@ -90,7 +90,9 @@ namespace StuManSys.Controllers
 
             var mapper = new Mapper(config);
             StoreDto rs = mapper.Map<StoreDto>(store);
-            rs.Items = mapStringToList(store.Items).Result.Value;
+            rs.Items = mapStringToList(store.Items).Result != null ? mapStringToList(store.Items).Result.Value : new List<ItemDto>() ;
+
+
             return View(rs);
         }
 

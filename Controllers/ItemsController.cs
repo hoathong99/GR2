@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StuManSys.Data;
 using StudentManagementSys.Model;
+using AutoMapper;
+using StudentManagementSys.Controllers.Dto;
 
 namespace StuManSys.Controllers
 {
@@ -19,12 +21,38 @@ namespace StuManSys.Controllers
             _context = context;
         }
 
+        // AutoMapper configuration
+        private MapperConfiguration config = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<Item, ItemDto>()
+        );
+
+        private MapperConfiguration configReversed = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<ItemDto, Item>()
+        );
+
+
         // GET: Items
         public async Task<IActionResult> Index()
         {
-              return _context.Item != null ? 
-                          View(await _context.Item.ToListAsync()) :
-                          Problem("Entity set 'StuManSysContext.Item'  is null.");
+              //return _context.Item != null ? 
+              //            View(await _context.Item.ToListAsync()) :
+              //            Problem("Entity set 'StuManSysContext.Item'  is null.");
+
+            if (_context.Item != null)
+            {
+                var mapper = new Mapper(config);
+                List<ItemDto> rs = new List<ItemDto>();
+                List<Item> lsItem = await _context.Item.ToListAsync();
+                foreach (Item i in lsItem)
+                {
+                    rs.Add(mapper.Map<ItemDto>(i));
+                }
+                return View(rs);
+            }
+            else
+            {
+                return Problem("Entity set 'StuManSysContext.Item'  is null.");
+            }
         }
 
         // GET: Items/Details/5
@@ -34,15 +62,16 @@ namespace StuManSys.Controllers
             {
                 return NotFound();
             }
-
+            var mapper = new Mapper(config);
             var item = await _context.Item
                 .FirstOrDefaultAsync(m => m.ItemID == id);
+            ItemDto itemDto = mapper.Map<ItemDto>(item);
             if (item == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(itemDto);
         }
 
         // GET: Items/Create
@@ -56,9 +85,10 @@ namespace StuManSys.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Desc,ItemID,price")] Item item)
+        public async Task<IActionResult> Create([Bind("Name,Desc,ItemID,price")] ItemDto itemDto)
         {
             //if (ModelState.IsValid)
+            var item = new Mapper(configReversed).Map<Item>(itemDto);
             {
                 _context.Add(item);
                 await _context.SaveChangesAsync();
@@ -77,11 +107,12 @@ namespace StuManSys.Controllers
             }
 
             var item = await _context.Item.FindAsync(id);
+            ItemDto itemDto = new Mapper(config).Map<ItemDto>(item);
             if (item == null)
             {
                 return NotFound();
             }
-            return View(item);
+            return View(itemDto);
         }
 
         // POST: Items/Edit/5
@@ -89,17 +120,18 @@ namespace StuManSys.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,Desc,ItemID,price")] Item item)
+        public async Task<IActionResult> Edit(string id, [Bind("Name,Desc,ItemID,price")] ItemDto itemDto)
         {
-            if (id != item.ItemID)
+            if (id != itemDto.ItemID)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            Item item = new Mapper(configReversed).Map<Item>(itemDto);
+            //if (ModelState.IsValid)
             {
                 try
                 {
+                    _context.ChangeTracker.Clear();
                     _context.Update(item);
                     await _context.SaveChangesAsync();
                 }
@@ -116,7 +148,7 @@ namespace StuManSys.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            //return View(item);
         }
 
         // GET: Items/Delete/5
@@ -129,12 +161,13 @@ namespace StuManSys.Controllers
 
             var item = await _context.Item
                 .FirstOrDefaultAsync(m => m.ItemID == id);
+            ItemDto itemDto = new Mapper(config).Map<ItemDto>(item);
             if (item == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(itemDto);
         }
 
         // POST: Items/Delete/5

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StuManSys.Data;
 using Microsoft.AspNetCore.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<StuManSysContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StuManSysContext") ?? throw new InvalidOperationException("Connection string 'StuManSysContext' not found.")));
@@ -49,6 +50,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.SlidingExpiration = true;
 });
+
 
 var app = builder.Build();
 

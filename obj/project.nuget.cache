@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wrm8RA6hlUP2YJCfL1xfrLMGP+eCJeJOywhli+YOtasG2CWJk2ex8OpZ0HnIPBpPfMQQV6d0cR0e5qSCmFRG6g==",
+  "dgSpecHash": "462CYHBVQFlHLQA9zB93m+3qjak92L3RcdzXifyKd5fwvY4yghTSEDg9oVC1v1l54QE/tdGhbYyPPbhrDANX7A==",
   "success": true,
-  "projectFilePath": "I:\\GR\\GR2\\StuManSys.csproj",
+  "projectFilePath": "I:\\Git\\GR2_VNA\\StuManSys.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\anhvn.NSVC\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\anhvn.NSVC\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",

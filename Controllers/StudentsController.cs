@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StuManSys.Data;
 using StudentManagementSys.Model;
+using StuManSys.Services;
+using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 
 namespace StuManSys.Controllers
 {
     public class StudentsController : Controller
     {
         private readonly StuManSysContext _context;
-
+        private readonly StudentServices _StuService;
         public StudentsController(StuManSysContext context)
         {
             _context = context;
+            _StuService = new StudentServices(context);
         }
 
         // GET: Students
@@ -30,18 +33,19 @@ namespace StuManSys.Controllers
         // GET: Students/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            String Name = HttpContext.User.Identity.Name;
-            if (id == null || _context.Student == null)
-            {
-                return NotFound();
-            }
+            //String Name = HttpContext.User.Identity.Name;
+            //if (id == null || _context.Student == null)
+            //{
+            //    return NotFound();
+            //}
 
-            var student = await _context.Student
-                .FirstOrDefaultAsync(m => m.UID == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
+            //var student = await _context.Student
+            //    .FirstOrDefaultAsync(m => m.UID == id);
+            //if (student == null)
+            //{
+            //    return NotFound();
+            //}
+            var student = _StuService.GetStudent(id).Result;
 
             return View(student);
         }
@@ -59,13 +63,13 @@ namespace StuManSys.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("SchoolSession,CPA,TotalCredit,PassedCredit,ClassRoomID,Program,SubjectEnlisted,UID,Name,Status,BirtDate,Type,PhoneNumber,Email,Sex,Address,Relative,YearofStart,Religion,Authority,BCKey,StoreID")] Student student)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 _context.Add(student);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            //return View(student);
         }
 
         // GET: Students/Edit/5

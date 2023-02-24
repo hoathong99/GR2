@@ -11062,11 +11062,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "I:\\GR\\GR2\\StuManSys.csproj",
+      "projectUniqueName": "I:\\Git\\GR2_VNA\\StuManSys.csproj",
       "projectName": "StuManSys",
-      "projectPath": "I:\\GR\\GR2\\StuManSys.csproj",
+      "projectPath": "I:\\Git\\GR2_VNA\\StuManSys.csproj",
       "packagesPath": "C:\\Users\\anhvn.NSVC\\.nuget\\packages\\",
-      "outputPath": "I:\\GR\\GR2\\obj\\",
+      "outputPath": "I:\\Git\\GR2_VNA\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\anhvn.NSVC\\AppData\\Roaming\\NuGet\\NuGet.Config",
